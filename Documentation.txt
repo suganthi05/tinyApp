@@ -1,1 +1,40 @@
 Documentation
+1. Create a new directory tinyApp
+2. Create a git repo tinyApp
+2.npm init - Enter description,git repo and author 
+3. npm install express --save
+4.a)git init
+  b)git status .
+  c)git add .
+  d)git commit -m "npm installed and git initialized"
+  e)git push --set-upstream https://github.com/suganthi05/tinyApp master 
+  f)Enter git Username and Password
+    (Error Message ---> need to do git pull)
+  g)git pull https://github.com/suganthi05/tinyApp
+  h)git push --set-upstream https://github.com/suganthi05/tinyApp master 
+ 5. create a new Web Server file - express_server.js
+ 6. express_server.js
+		var express = require("express");
+		var app = express();
+		var PORT = 8080; // default port 8080
+
+		var urlDatabase = {
+		  "b2xVn2": "http://www.lighthouselabs.ca",
+		  "9sm5xK": "http://www.google.com"
+		};
+
+		app.get("/", (req, res) => {
+		  res.send("Hello!");
+		});
+
+		app.listen(PORT, () => {
+		  console.log(`Example app listening on port ${PORT}!`);
+		});
+ 7. npm install ejs --save
+
+
+  
+
+
+
+
