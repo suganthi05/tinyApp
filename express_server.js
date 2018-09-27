@@ -2,7 +2,7 @@ var express = require("express");
 var app = express();
 var PORT = 8080;
 const bodyParser = require("body-parser");
-
+const cookieParser = require("cookie-parser");
 
 app.set("view engine", "ejs");
 var urlDatabase ={
@@ -38,7 +38,6 @@ app.get("/urls", (req,res) => {
 //Enter Long URL   
 app.get("/urls/new",(req,res) => {
 	res.render("urls_new");
-
 });
 
 //View generated Short URL  
@@ -47,12 +46,14 @@ app.get("/urls/:id",(req,res) => {
 		                longURL: urlDatabase[req.params.id].url};
 	res.render("urls_show",templateVars);
 });
+
 //Edit Long URL
 app.post("/urls/:id",(req,res) => {
     urlDatabase[req.body.hidshortURL] = {url: req.body.longURL};
 	let templateVars = {urls: urlDatabase};
 	res.render("urls_index", templateVars);
 });
+
 //Delete Long and Short URL
 app.post("/urls/:id/delete",(req,res) => {
     delete urlDatabase[req.params.id];
@@ -65,6 +66,14 @@ app.post("/urls",(req,res) => {
 	urlDatabase[shortURL] = {url: longURL}; //Update to database
 	res.redirect(`/urls/${shortURL}`);
 });
+
+//Login using cookie-parser
+app.post("/login",(req,res) =>{
+	let username = req.cookies["username"];
+	res.cookie("username",username);
+	res.direct("/urls")
+})
+
 //Short URL generation
 function generateRandomString() {
 	let randomString = "";
@@ -79,9 +88,7 @@ function generateRandomString() {
 app.get("/u/:shortURL",(req,res) => {
 	let longURL = urlDatabase[req.params.shortURL].url;
 	res.redirect(longURL);
-
 });
-
 
 app.listen(PORT,() => {
 	console.log(`Example app listening on port ${PORT}!`);
