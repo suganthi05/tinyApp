@@ -5,11 +5,14 @@
 </head>
 <body style = "font-size:20px; padding: 50px;">
 	<% include partials/_header %>
-	<form>
-	      <label> LongUrl : </label>
-	        <label id = "longUrl"></label><br>
-	      <label> ShortUrl : </label>
-	      <label id = "shortUrl"></label>
+	<form>	      
+	      <label> ShortURL : </label>
+	      <label id = "shortURL"><%= shortURL %></label><br>
+	      <label> LongURL : </label>
+	       <label id = "longURL"></label>
+	       <input id="longURL" type= "text" name="longURL" value=<%= longURL%> style="width: 300px">
+	       <input type="submit" value="Update">
+	   
 	</form>
 </body>
 </html>

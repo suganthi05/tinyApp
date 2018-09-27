@@ -6,8 +6,13 @@ const bodyParser = require("body-parser");
 
 app.set("view engine", "ejs");
 var urlDatabase ={
-	"b2xVn2": "http://www.lighthouselabs.ca",
-    "9sm5xK": "http://www.google.com"
+
+	"b2xVn2": {
+		url: "http://www.lighthouselabs.ca"
+	},
+    "9sm5xK": {
+    	url: "http://www.google.com"
+    }
 };
 app.use (bodyParser.urlencoded({extended:true}));
 
@@ -30,32 +35,47 @@ app.get("/urls", (req,res) => {
 	res.render("urls_index", templateVars);
 });
 
+//Enter Long URL
 app.get("/urls/new",(req,res) => {
-	console.log("loading2...");
-		res.render("urls_new");
+	res.render("urls_new");
 
 });
 
+//View generated Short URL  
 app.get("/urls/:id",(req,res) => {
 	console.log("loading...");
-	let templateVars = {shortURL: req.params.id};
+	let templateVars = {shortURL: req.params.id, 
+		                longURL: urlDatabase[req.params.id].url};
 	res.render("urls_show",templateVars);
 });
 
 
 app.post("/urls",(req,res) => {
-	console.log(req.body);
-	res.send("Ok");
+	let shortURL = generateRandomString();
+	let longURL = req.body.longURL;
+	urlDatabase[shortURL] = {url: longURL};
+	res.redirect(`/urls/${shortURL}`);
+	//console.log(req.body);
+	//res.send("Ok");
 });
-
+//Short URL generation
 function generateRandomString() {
 	let randomString = "";
-	const character = "ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+	const character = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     for (let i = 0; i < 6; i++){
-    	randomString += character.charAt(Math.floor(Math.random()*character.lenght));
+    	randomString += character.charAt(Math.floor(Math.random()*character.length));
     }
     return randomString;
 }
+
+//Handle short URL requests
+app.get("/u/:shortURL",(req,res) => {
+	c
+	let longURL = urlDatabase[req.params.shortURL].url;
+	res.redirect(longURL);
+
+});
+
 
 app.listen(PORT,() => {
 	console.log(`Example app listening on port ${PORT}!`);
