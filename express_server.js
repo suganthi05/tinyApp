@@ -43,9 +43,7 @@ app.get("/urls/new",(req,res) => {
 
 //View generated Short URL  
 app.get("/urls/:id",(req,res) => {
-	console.log("loading...");
-	let templateVars = {shortURL: req.params.id, 
-		                longURL: urlDatabase[req.params.id].url};
+	let templateVars = {shortURL: req.params.id,longURL: urlDatabase[req.params.id].url};
 	res.render("urls_show",templateVars);
 });
 
@@ -55,8 +53,7 @@ app.post("/urls",(req,res) => {
 	let longURL = req.body.longURL;
 	urlDatabase[shortURL] = {url: longURL};
 	res.redirect(`/urls/${shortURL}`);
-	//console.log(req.body);
-	//res.send("Ok");
+
 });
 //Short URL generation
 function generateRandomString() {
@@ -70,7 +67,6 @@ function generateRandomString() {
 
 //Handle short URL requests
 app.get("/u/:shortURL",(req,res) => {
-	c
 	let longURL = urlDatabase[req.params.shortURL].url;
 	res.redirect(longURL);
 

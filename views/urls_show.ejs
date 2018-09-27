@@ -7,7 +7,7 @@
 	<% include partials/_header %>
 	<form>	      
 	      <label> ShortURL : </label>
-	      <label id = "shortURL"><%= shortURL %></label><br>
+	      <label id = "shortURL"><a href="http://localhost:8480/u/<%= shortURL %>" target="_blank"><%= shortURL %></a></label><br />
 	      <label> LongURL : </label>
 	       <label id = "longURL"></label>
 	       <input id="longURL" type= "text" name="longURL" value=<%= longURL%> style="width: 300px">
