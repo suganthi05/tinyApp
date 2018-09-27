@@ -47,13 +47,17 @@ app.get("/urls/:id",(req,res) => {
 		                longURL: urlDatabase[req.params.id].url};
 	res.render("urls_show",templateVars);
 });
-
+//Edit Long URL
 app.post("/urls/:id",(req,res) => {
     urlDatabase[req.body.hidshortURL] = {url: req.body.longURL};
 	let templateVars = {urls: urlDatabase};
 	res.render("urls_index", templateVars);
 });
-
+//Delete Long and Short URL
+app.post("/urls/:id/delete",(req,res) => {
+    delete urlDatabase[req.params.id];
+    res.redirect("/urls");
+});
 
 app.post("/urls",(req,res) => {
 	let shortURL = generateRandomString();

@@ -16,13 +16,14 @@
 	  <tr>
 		  <td style="border-style: double"><a href="<%= urls[shortURL].url %>" target="_blank"><%= urls[shortURL].url %></a></td>
 		  <td style="border-style: double"><a href="/u/<%= shortURL %>" target="_blank"><%= shortURL %></a></td>
-
 		  <td style="border-style: double">
 		  	<form action="/urls/<%= shortURL %>">
 		  		<input type="submit" value="Edit">
 		  	</form>
 		  </td>
-		  <td style="border-style: double"><input type="submit" value="Delete"></td>
+		  <td style="border-style: double">
+		  	<form action="/urls/<%= shortURL %>/delete"method="POST"><input type="submit" value="Delete"></td>
+		  	</form>
 	  </tr>
 	  <% }); %>
 	</table>
