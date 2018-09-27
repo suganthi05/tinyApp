@@ -35,7 +35,7 @@ app.get("/urls", (req,res) => {
 	res.render("urls_index", templateVars);
 });
 
-//Enter Long URL
+//Enter Long URL   
 app.get("/urls/new",(req,res) => {
 	res.render("urls_new");
 
@@ -43,17 +43,23 @@ app.get("/urls/new",(req,res) => {
 
 //View generated Short URL  
 app.get("/urls/:id",(req,res) => {
-	let templateVars = {shortURL: req.params.id,longURL: urlDatabase[req.params.id].url};
+	let templateVars = {shortURL: req.params.id,
+		                longURL: urlDatabase[req.params.id].url};
 	res.render("urls_show",templateVars);
+});
+
+app.post("/urls/:id",(req,res) => {
+    urlDatabase[req.body.hidshortURL] = {url: req.body.longURL};
+	let templateVars = {urls: urlDatabase};
+	res.render("urls_index", templateVars);
 });
 
 
 app.post("/urls",(req,res) => {
 	let shortURL = generateRandomString();
 	let longURL = req.body.longURL;
-	urlDatabase[shortURL] = {url: longURL};
+	urlDatabase[shortURL] = {url: longURL}; //Update to database
 	res.redirect(`/urls/${shortURL}`);
-
 });
 //Short URL generation
 function generateRandomString() {

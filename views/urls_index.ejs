@@ -5,5 +5,22 @@
 </head>
 <body>
 	<% include partials/_header %>
+	<table>
+	  <tr>
+		  <td style="border-style: double"><b>Long URL</b></td>
+		  <td style="border-style: double"><b>Short URL</b></td>
+		  <td style="border-style: double"><b>Edit URL</b></td>
+		  <td style="border-style: double"><b>Delete URL</b></td>
+	  </tr>
+	  <% Object.keys(urls).forEach(function(shortURL) { %>
+	  <tr>
+		  <td style="border-style: double"><a href="<%= urls[shortURL].url %>" target="_blank"><%= urls[shortURL].url %></a></td>
+		  <td style="border-style: double"><a href="<%= urls[shortURL].url %>" target="_blank"><%= shortURL %></a></td>
+		  <td style="border-style: double"><input type="submit" value="Edit"></td>
+		  <td style="border-style: double"><input type="submit" value="Delete"></td>
+	  </tr>
+	  <% }); %>
+	</table>
+
 </body>
 </html>
