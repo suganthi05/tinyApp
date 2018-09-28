@@ -64,14 +64,12 @@ app.post("/urls",(req,res) => {
 	urlDatabase[shortURL] = {url: longURL}; //Update to database
 	res.redirect(`/urls/${shortURL}`);
 });
-
-//Login using cookie-parser
+//Login Route
 app.post("/login",(req,res) =>{
 	let username = req.cookies["username"];
 	res.cookie("username",username);
 	res.direct("/urls")
-})
-
+});
 //Short URL generation
 function generateRandomString() {
 	let randomString = "";
