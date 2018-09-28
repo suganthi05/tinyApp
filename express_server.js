@@ -6,7 +6,6 @@ const cookieParser = require("cookie-parser");
 
 app.set("view engine", "ejs");
 var urlDatabase ={
-
 	"b2xVn2": {
 		url: "http://www.lighthouselabs.ca"
 	},
@@ -15,7 +14,6 @@ var urlDatabase ={
     }
 };
 app.use (bodyParser.urlencoded({extended:true}));
-
 app.get("/",(req,res) => {
 	res.send("Hello!");
 });
