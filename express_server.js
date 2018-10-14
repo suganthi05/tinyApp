@@ -41,20 +41,23 @@ app.get("/urls", (req,res) => {
 
 //Enter Long URL   
 app.get("/urls/new",(req,res) => {
-	res.render("urls_new");
+	let templateVars = {username: req.cookies["username"]} 
+	res.render("urls_new", templateVars);
 });
+
 
 //View generated Short URL  
 app.get("/urls/:id",(req,res) => {
 	let templateVars = {shortURL: req.params.id,
-		                longURL: urlDatabase[req.params.id].url};
+		                longURL: urlDatabase[req.params.id].url,
+		                username: req.cookies["username"]};
 	res.render("urls_show",templateVars);
 });
 
 //Edit Long URL
 app.post("/urls/:id",(req,res) => {
     urlDatabase[req.body.hidshortURL] = {url: req.body.longURL};
-	let templateVars = {urls: urlDatabase};
+	let templateVars = {urls: urlDatabase, username: req.cookies["username"]};
 	res.render("urls_index", templateVars);
 });
 
@@ -73,15 +76,17 @@ app.post("/urls",(req,res) => {
 
 //Login Route
 app.post("/login",(req,res) =>{
-	console.log('login');
-	let login = req.body.username;
-	res.cookie("username", login).redirect("/urls"); // Assign the username from form to cookie's username
+	res.cookie("username", req.body.username); // Assign the username from form to cookie's username
+	res.redirect("/urls");
+});
+
+app.post("/logout",(req,res) =>{
+	res.clearCookie("username");
+	res.redirect("/urls");
 });
 
 //Display Username
 app.get("/urls",(req,res) => {
-	console.log('urls');
-	console.log(req.cookies["username"]);
 	let templateVars = {username: req.cookies["username"], urls: urlDatabase} 
 	res.render("urls_index",templateVars);
 });
