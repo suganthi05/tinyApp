@@ -41,15 +41,28 @@ app.use(bodyParser.urlencoded({extended:true}));
 // Use cookieParser
 app.use(cookieParser());
 
+function checkifalreadyexists(email) {
+  let exists = 0;
+  for (var user in users) {
+    if (!users.hasOwnProperty(user)) continue;
+    var userObj = users[user];
+    for (var value in userObj) {
+      if(!userObj.hasOwnProperty(value)) continue;
+      if (userObj[value] === email) {
+        exists = 1;
+      }
+    }
+  }
+  if (exists === 1) {
+    return true;
+  } else {
+    return false;
+  }
+};
+
 app.get("/",(req,res) => {
 	res.send("Hello!");
 });
-
-/*
-app.get("/urls.json",(req,res) => {
-	res.json(urlDatabase);
-});
-*/
 
 app.get("/hello",(req,res) => {
 	console.log('hello...');
@@ -101,9 +114,22 @@ app.post("/register",(req,res) =>{
 	res.cookie("userid", userid);
 	let email = req.body.email;
 	let password = req.body.password;
-	users[userid] = {id: userid, email: email, password: password}; //Update to database
-	res.redirect("/urls");
+	if (email.trim() === "" || email.trim() === null) {
+	  res.status(400);
+	  res.send(`<html><body>Please enter a valid email. Please go back to <a href="/register">register</a> page.</body></html>`)		
+	} else if (password.trim() === "" || password.trim() === null) {
+	  res.status(400);
+	  res.send(`<html><body>Please enter a valid password. Please go back to <a href="/register">register</a> page.</body></html>`)
+	} else if (checkifalreadyexists(email) === true) {
+      res.status(400);
+	  res.send(`<html><body>Email already registered. Please go back to <a href="/register">register</a> page.</body></html>`)		
+	} else {
+      users[userid] = {id: userid, email: email, password: password}; //Update to database
+      console.log(users);
+	  res.redirect("/urls");
+	};
 });
+
 //Login Route
 app.post("/login",(req,res) =>{
 	res.cookie("username", req.body.username); // Assign the username from form to cookie's username
