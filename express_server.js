@@ -1,11 +1,11 @@
-var express = require("express");
-var app = express();
-var PORT = 8080;
+const express = require("express");
+const app = express();
+const PORT = 8080;
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 
 app.set("view engine", "ejs");
-var urlDatabase ={
+let urlDatabase ={
 	"b2xVn2": {
 		url: "http://www.lighthouselabs.ca"
 	},
@@ -13,7 +13,11 @@ var urlDatabase ={
     	url: "http://www.google.com"
     }
 };
-app.use (bodyParser.urlencoded({extended:true}));
+// Use bodyParser
+app.use(bodyParser.urlencoded({extended:true}));
+// Use cookieParser
+app.use(cookieParser());
+
 app.get("/",(req,res) => {
 	res.send("Hello!");
 });
@@ -64,12 +68,24 @@ app.post("/urls",(req,res) => {
 	urlDatabase[shortURL] = {url: longURL}; //Update to database
 	res.redirect(`/urls/${shortURL}`);
 });
+
 //Login Route
 app.post("/login",(req,res) =>{
-	let username = req.cookies["username"];
-	res.cookie("username",username);
-	res.direct("/urls")
+	res.cookie("user", req.body.username); // Assign the username from form to cookie's username
+	res.redirect("/urls")
 });
+
+//Display Username
+app.get("/urls",(req,res) => {
+	let userId = req.cookies["user"];
+	let templateVars = { user:users[req.cookies.user], urls: urlDatabase(user)} 
+	if(userId){
+	  res.render("urls_index",templateVars);
+	} else {
+	  res.redirect(302,"/login");
+	}
+});
+
 //Short URL generation
 function generateRandomString() {
 	let randomString = "";
