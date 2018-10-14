@@ -13,6 +13,29 @@ let urlDatabase ={
     	url: "http://www.google.com"
     }
 };
+
+let users ={
+	"c2xVn2": {
+		id: "c2xVn2",
+		email: "bill@gates.com",
+		password: "purple-monkey-dinosaur"
+	},
+    "8sm5xK": {
+    	id: "8sm5xK",
+    	email: "prabhu@deva.com",
+    	password: "dishwasher-funk"
+    },
+    "8fm5xK": {
+    	id: "8fm5xK",
+    	email: "rajini@kanth.com",
+    	password: "washingmachine-jug"
+    },
+    "8sn5xK": {
+    	id: "8sn5xK",
+    	email: "ar@rahman.com",
+    	password: "fishingnet-pig"
+    }
+};
 // Use bodyParser
 app.use(bodyParser.urlencoded({extended:true}));
 // Use cookieParser
@@ -22,22 +45,17 @@ app.get("/",(req,res) => {
 	res.send("Hello!");
 });
 
+/*
 app.get("/urls.json",(req,res) => {
 	res.json(urlDatabase);
 });
+*/
 
 app.get("/hello",(req,res) => {
 	console.log('hello...');
 	let templateVars = { greeting:'Hello World'};
 	res.render("hello_world",templateVars);
 });
-
-/*
-app.get("/urls", (req,res) => {
-	let templateVars = {urls: urlDatabase};
-	res.render("urls_index", templateVars);
-});
-*/
 
 //Enter Long URL   
 app.get("/urls/new",(req,res) => {
@@ -74,12 +92,24 @@ app.post("/urls",(req,res) => {
 	res.redirect(`/urls/${shortURL}`);
 });
 
+//Register
+app.get("/register",(req,res) => {
+	res.render("urls_register");
+});
+app.post("/register",(req,res) =>{
+	let userid = generateRandomString();
+	res.cookie("userid", userid);
+	let email = req.body.email;
+	let password = req.body.password;
+	users[userid] = {id: userid, email: email, password: password}; //Update to database
+	res.redirect("/urls");
+});
 //Login Route
 app.post("/login",(req,res) =>{
 	res.cookie("username", req.body.username); // Assign the username from form to cookie's username
 	res.redirect("/urls");
 });
-
+//Logout Route
 app.post("/logout",(req,res) =>{
 	res.clearCookie("username");
 	res.redirect("/urls");
