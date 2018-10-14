@@ -1,12 +1,11 @@
-var express = require("express");
-var app = express();
-var PORT = 8080;
+const express = require("express");
+const app = express();
+const PORT = 8080;
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 
 app.set("view engine", "ejs");
-var urlDatabase ={
-
+let urlDatabase ={
 	"b2xVn2": {
 		url: "http://www.lighthouselabs.ca"
 	},
@@ -14,7 +13,10 @@ var urlDatabase ={
     	url: "http://www.google.com"
     }
 };
-app.use (bodyParser.urlencoded({extended:true}));
+// Use bodyParser
+app.use(bodyParser.urlencoded({extended:true}));
+// Use cookieParser
+app.use(cookieParser());
 
 app.get("/",(req,res) => {
 	res.send("Hello!");
@@ -30,27 +32,32 @@ app.get("/hello",(req,res) => {
 	res.render("hello_world",templateVars);
 });
 
+/*
 app.get("/urls", (req,res) => {
 	let templateVars = {urls: urlDatabase};
 	res.render("urls_index", templateVars);
 });
+*/
 
 //Enter Long URL   
 app.get("/urls/new",(req,res) => {
-	res.render("urls_new");
+	let templateVars = {username: req.cookies["username"]} 
+	res.render("urls_new", templateVars);
 });
+
 
 //View generated Short URL  
 app.get("/urls/:id",(req,res) => {
 	let templateVars = {shortURL: req.params.id,
-		                longURL: urlDatabase[req.params.id].url};
+		                longURL: urlDatabase[req.params.id].url,
+		                username: req.cookies["username"]};
 	res.render("urls_show",templateVars);
 });
 
 //Edit Long URL
 app.post("/urls/:id",(req,res) => {
     urlDatabase[req.body.hidshortURL] = {url: req.body.longURL};
-	let templateVars = {urls: urlDatabase};
+	let templateVars = {urls: urlDatabase, username: req.cookies["username"]};
 	res.render("urls_index", templateVars);
 });
 
@@ -67,12 +74,22 @@ app.post("/urls",(req,res) => {
 	res.redirect(`/urls/${shortURL}`);
 });
 
-//Login using cookie-parser
+//Login Route
 app.post("/login",(req,res) =>{
-	let username = req.cookies["username"];
-	res.cookie("username",username);
-	res.direct("/urls")
-})
+	res.cookie("username", req.body.username); // Assign the username from form to cookie's username
+	res.redirect("/urls");
+});
+
+app.post("/logout",(req,res) =>{
+	res.clearCookie("username");
+	res.redirect("/urls");
+});
+
+//Display Username
+app.get("/urls",(req,res) => {
+	let templateVars = {username: req.cookies["username"], urls: urlDatabase} 
+	res.render("urls_index",templateVars);
+});
 
 //Short URL generation
 function generateRandomString() {
