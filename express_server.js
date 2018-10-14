@@ -32,10 +32,12 @@ app.get("/hello",(req,res) => {
 	res.render("hello_world",templateVars);
 });
 
+/*
 app.get("/urls", (req,res) => {
 	let templateVars = {urls: urlDatabase};
 	res.render("urls_index", templateVars);
 });
+*/
 
 //Enter Long URL   
 app.get("/urls/new",(req,res) => {
@@ -71,19 +73,17 @@ app.post("/urls",(req,res) => {
 
 //Login Route
 app.post("/login",(req,res) =>{
-	res.cookie("user", req.body.username); // Assign the username from form to cookie's username
-	res.redirect("/urls")
+	console.log('login');
+	let login = req.body.username;
+	res.cookie("username", login).redirect("/urls"); // Assign the username from form to cookie's username
 });
 
 //Display Username
 app.get("/urls",(req,res) => {
-	let userId = req.cookies["user"];
-	let templateVars = { user:users[req.cookies.user], urls: urlDatabase(user)} 
-	if(userId){
-	  res.render("urls_index",templateVars);
-	} else {
-	  res.redirect(302,"/login");
-	}
+	console.log('urls');
+	console.log(req.cookies["username"]);
+	let templateVars = {username: req.cookies["username"], urls: urlDatabase} 
+	res.render("urls_index",templateVars);
 });
 
 //Short URL generation

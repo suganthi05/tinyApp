@@ -1,11 +1,12 @@
-<!DOCTYPE html>
-<html lang = "en">
-  <header>
-	<h1>Tiny App</h1>
-	<form method="POST" action="/login">
-	  <label for="username"> Username: </label>
-	  <input id="username" type="text" name="username" style="width: 150px">
-	  <input type="submit" value="Login" name="Login">
-    </form>
-	  </header>
-</html>
+<header>
+<h1>Tiny App</h1>
+<% if(username){ %>
+  <span>Hi, <%=username %></span>
+  <%} else { %>
+    <form method="POST" action="/login">
+    <label for="username"> Username: </label>
+    <input id="username" type="text" name="username" style="width: 150px">
+    <input type="submit" value="Login" name="Login">
+  </form>
+<% } %>
+</header>
