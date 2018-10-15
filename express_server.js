@@ -3,8 +3,10 @@ const app = express();
 const PORT = 8080;
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
+const bcrypt = require('bcrypt');
 
 app.set("view engine", "ejs");
+
 let urlDatabase = {
   "b2xVn2": {
     url: "http://www.lighthouselabs.ca",
@@ -92,8 +94,8 @@ function checkUser(email, password) {
   let userFound = false;
   for (let userID in userKeys) {
     let id = userKeys[userID];
-    if ((email === users[id].email) && (password === users[id].password)) {
-      userFound = true;
+    if (email === users[id].email) {
+      userFound = bcrypt.compareSync(password, users[id].password);
       return userFound;
     }
   }
@@ -237,10 +239,11 @@ app.post("/register", (req, res) => {
   let userid = generateRandomString();
   let email = req.body.email;
   let password = req.body.password;
+  let hashedPassword = bcrypt.hashSync(password, 10);
   if (email.trim() === "" || email.trim() === null) {
     res.status(400);
     res.send(`<html><body>Please enter a valid email. Please go back to <a href="/register">register</a> page to retry.</body></html>`);
-  } else if (password === "" || password === null) {
+  } else if (hashedPassword === "" || hashedPassword === null) {
     res.status(400);
     res.send(`<html><body>Please enter a valid password. Please go back to <a href="/register">register</a> page to retry.</body></html>`);
   } else if (checkifalreadyexists(email) === true) {
@@ -250,7 +253,7 @@ app.post("/register", (req, res) => {
     users[userid] = {
       id: userid,
       email: email,
-      password: password
+      password: hashedPassword
     }; //Update to database
     res.redirect("/login");
   };
