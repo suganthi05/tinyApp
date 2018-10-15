@@ -16,12 +16,13 @@ app.use(bodyParser.urlencoded({
   extended: true
 }));
 
+// Use cookieSession
 app.use(cookieSession({
   name: 'session',
   keys: ['suqAN7a1']
 }));
 
-//Short URL generation
+// Generate Random String for user id and tiny url
 function generateRandomString() {
   let randomString = "";
   const character = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -31,7 +32,8 @@ function generateRandomString() {
   return randomString;
 };
 
-function checkifalreadyexists(email) {
+// Check if the user already exists in database
+function checkUserExists(email) {
   let exists = 0;
   for (let user in users) {
     if (!users.hasOwnProperty(user)) continue;
@@ -50,6 +52,7 @@ function checkifalreadyexists(email) {
   }
 };
 
+// Check if entered email found in database
 function checkEmail(email) {
   let userKeys = Object.keys(users);
   let emailFound = false;
@@ -63,6 +66,7 @@ function checkEmail(email) {
   return emailFound;
 };
 
+// Check if entered email and password combo found in database
 function checkUser(email, password) {
   let userKeys = Object.keys(users);
   let userFound = false;
@@ -76,6 +80,7 @@ function checkUser(email, password) {
   return userFound;
 };
 
+// Get user id for the given email
 function getUserId(email) {
   let userKeys = Object.keys(users);
   let userid = '';
@@ -89,6 +94,7 @@ function getUserId(email) {
   return userid;
 }
 
+// Get the list of urls which belongs to current user
 function urlsForUser(userid) {
   let urlKeys = Object.keys(urlDatabase);
   let userURLs = {};
@@ -104,10 +110,12 @@ function urlsForUser(userid) {
   return userURLs;
 }
 
+// root redirect to login
 app.get("/", (req, res) => {
   res.render("urls_login");
 });
 
+// sample hello world route
 app.get("/hello", (req, res) => {
   let templateVars = {
     greeting: 'Hello World'
@@ -115,6 +123,7 @@ app.get("/hello", (req, res) => {
   res.render("hello_world", templateVars);
 });
 
+// Getting list page
 app.get("/urls", (req, res) => {
   let userid = req.session.user_id;
   let userData = users[userid];
@@ -130,6 +139,7 @@ app.get("/urls", (req, res) => {
   }
 });
 
+// Redirect to Edit
 app.post("/urls", (req, res) => {
   let userid = req.session.user_id;
   let shortURL = generateRandomString();
@@ -204,11 +214,12 @@ app.post("/urls/:id/delete", (req, res) => {
   }
 });
 
-//Register
+// render register page
 app.get("/register", (req, res) => {
   res.render("urls_register");
 });
 
+// Register
 app.post("/register", (req, res) => {
   let userid = generateRandomString();
   let email = req.body.email;
@@ -220,7 +231,7 @@ app.post("/register", (req, res) => {
   } else if (hashedPassword === "" || hashedPassword === null) {
     res.status(400);
     res.send(`<html><body>Please enter a valid password. Please go back to <a href="/register">register</a> page to retry.</body></html>`);
-  } else if (checkifalreadyexists(email) === true) {
+  } else if (checkUserExists(email) === true) {
     res.status(400);
     res.send(`<html><body>Email already registered. Please go back to <a href="/register">register</a> page to retry.</body></html>`);
   } else {
@@ -260,12 +271,12 @@ app.post("/login", (req, res) => {
     res.redirect("/urls");
   }
 });
+
 //Logout Route
 app.post("/logout", (req, res) => {
   res.clearCookie("userid");
   res.redirect("/login");
 });
-
 
 //Handle short URL requests
 app.get("/u/:shortURL", (req, res) => {
@@ -273,6 +284,7 @@ app.get("/u/:shortURL", (req, res) => {
   res.redirect(longURL);
 });
 
+// Listening in the given port
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
