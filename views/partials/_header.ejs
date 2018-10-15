@@ -1,15 +1,23 @@
 <header>
   <title>Tiny App</title>
 	<h1>Tiny App</h1>
-	<% if(username){ %>
-	  <form method="POST" action="/logout">
-	  	<span>Hi, <%=username %>!</span>
-	    <input type="submit" value="Logout" name="Logout">
-	  </form>
+	<% console.log('partial: ' + userObj) %>
+	<% if (userObj) { %>
+			<% if(userObj.email){ %>
+			  <form method="POST" action="/logout">
+			  	<span>Hi, <%=userObj.email %>!</span>
+			    <input type="submit" value="Logout" name="Logout">
+			  </form>
+			<%} else { %>
+			  <form method="GET" action="/login">
+			    <input type="submit" value="Login" name="Login">
+			  </form>
+			  <form method="GET" action="/register">
+			    <input type="submit" value="Register" name="Register">
+			  </form>
+			<% } %>
 	<%} else { %>
-	  <form method="POST" action="/login">
-	    <label for="username"> Username: </label>
-	    <input id="username" type="text" name="username" style="width: 150px">
+	  <form method="GET" action="/login">
 	    <input type="submit" value="Login" name="Login">
 	  </form>
 	  <form method="GET" action="/register">

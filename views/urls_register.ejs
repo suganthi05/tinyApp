@@ -5,10 +5,15 @@
 	<h3>Tiny App - Registration Form</h3>
 	<form action="/register" method="POST" style="margin:150px;">
 	  <label for="email"> Enter your Email Address: </label>
-	  <input id="email" type= "email" name="email" placeholder="example@domain.com" style="width: 300px"><br /><br />
+	  <input id="email" type= "email" name="email" placeholder="example@domain.com" style="width: 300px">
+	  <br /><br />
 	  <label for="password"> Enter your Password: </label>
 	  <input id="password" type= "password" name="password"><br /><br />
 	  <input type="submit" value="Register">
+	</form>
+	<form action="/login" method="GET" style="margin:150px;">
+		<label for="login">Already registered? --> </label>
+		<input type="submit" value="Login">
 	</form>
   </body>
 </html>
