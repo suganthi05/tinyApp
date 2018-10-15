@@ -18,12 +18,13 @@
   "license": "ISC",
   "dependencies": {
     "@ionic/app-scripts": "^3.2.0",
+    "bcrypt": "^1.0.3",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.18.3",
     "cookie-parser": "^1.4.3",
+    "cookie-session": "^2.0.0-beta.3",
     "ejs": "^2.6.1",
-    "express": "^4.16.3",
-    "bcrypt": "^1.0.3"
+    "express": "^4.16.3"
   },
   "devDependencies": {
     "nodemon": "^1.18.4"

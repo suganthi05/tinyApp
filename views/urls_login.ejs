@@ -1,18 +1,20 @@
 <!DOCTYPE html>
 <html lang ="en">
-<head></head>
+  <head>
+    <title>Tiny App</title>
+  </head>
   <body style ="font-size:20px; padding:50px;">
-	<h3>Tiny App - Login Form</h3>
-	<form action="/login" method="POST" style="margin:150px;">
-	  <label for="email"> Enter login Email Address: </label>
-	  <input id="email" type= "email" name="email" placeholder="example@domain.com" style="width: 300px"><br /><br />
-	  <label for="password"> Enter login Password: </label>
-	  <input id="password" type= "password" name="password"><br /><br />
-	  <input type="submit" value="Login">
-	</form>
-	<form action="/register" method="GET" style="margin:150px;">
-		<label for="register"> New user --> </label>
-		<input type="submit" value="Register">
-	</form>
+    <h1>Tiny App - Login Form</h1>
+    <form action="/login" method="POST" style="margin:150px;">
+      <label for="email"> Enter login Email Address: </label>
+      <input id="email" type= "email" name="email" placeholder="example@domain.com" style="width: 300px"><br /><br />
+      <label for="password"> Enter login Password: </label>
+      <input id="password" type= "password" name="password"><br /><br />
+      <input type="submit" value="Login">
+    </form>
+    <form action="/register" method="GET" style="margin:150px;">
+      <label for="register"> New user --> </label>
+      <input type="submit" value="Register">
+    </form>
   </body>
 </html>

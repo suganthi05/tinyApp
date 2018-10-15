@@ -2,50 +2,24 @@ const express = require("express");
 const app = express();
 const PORT = 8080;
 const bodyParser = require("body-parser");
-const cookieParser = require("cookie-parser");
 const bcrypt = require('bcrypt');
+const cookieSession = require('cookie-session');
 
 app.set("view engine", "ejs");
 
-let urlDatabase = {
-  "b2xVn2": {
-    url: "http://www.lighthouselabs.ca",
-    userID: "c2xVn2"
-  },
-  "9sm5xK": {
-    url: "http://www.google.com",
-    userID: "c2xVn2"
-  }
-};
+let urlDatabase = {};
 
-let users = {
-  "c2xVn2": {
-    id: "c2xVn2",
-    email: "bill@gates.com",
-    password: "purple-monkey-dinosaur"
-  },
-  "8sm5xK": {
-    id: "8sm5xK",
-    email: "prabhu@deva.com",
-    password: "dishwasher-funk"
-  },
-  "8fm5xK": {
-    id: "8fm5xK",
-    email: "rajini@kanth.com",
-    password: "washingmachine-jug"
-  },
-  "8sn5xK": {
-    id: "8sn5xK",
-    email: "ar@rahman.com",
-    password: "fishingnet-pig"
-  }
-};
+let users = {};
+
 // Use bodyParser
 app.use(bodyParser.urlencoded({
   extended: true
 }));
-// Use cookieParser
-app.use(cookieParser());
+
+app.use(cookieSession({
+  name: 'session',
+  keys: ['suqAN7a1']
+}));
 
 //Short URL generation
 function generateRandomString() {
@@ -59,10 +33,10 @@ function generateRandomString() {
 
 function checkifalreadyexists(email) {
   let exists = 0;
-  for (var user in users) {
+  for (let user in users) {
     if (!users.hasOwnProperty(user)) continue;
-    var userObj = users[user];
-    for (var value in userObj) {
+    let userObj = users[user];
+    for (let value in userObj) {
       if (!userObj.hasOwnProperty(value)) continue;
       if (userObj[value] === email) {
         exists = 1;
@@ -118,9 +92,9 @@ function getUserId(email) {
 function urlsForUser(userid) {
   let urlKeys = Object.keys(urlDatabase);
   let userURLs = {};
-  for(key in urlKeys) {
+  for (key in urlKeys) {
     let shortURL = urlKeys[key];
-    if (urlDatabase[shortURL].userID === userid){
+    if (urlDatabase[shortURL].userID === userid) {
       userURLs[shortURL] = {
         url: urlDatabase[shortURL].url,
         userID: userid
@@ -142,22 +116,22 @@ app.get("/hello", (req, res) => {
 });
 
 app.get("/urls", (req, res) => {
-  let userid = req.cookies["userid"];
+  let userid = req.session.user_id;
   let userData = users[userid];
   if (userData) {
-  	let urlsforuser = urlsForUser(userid);
+    let urlsforuser = urlsForUser(userid);
     let templateVars = {
       userObj: userData,
       urls: urlsforuser
     }
     res.render("urls_index", templateVars);
   } else {
-  	res.redirect("/login");
+    res.redirect("/login");
   }
 });
 
 app.post("/urls", (req, res) => {
-  let userid = req.cookies["userid"];
+  let userid = req.session.user_id;
   let shortURL = generateRandomString();
   let longURL = req.body.longURL;
   urlDatabase[shortURL] = {
@@ -169,7 +143,7 @@ app.post("/urls", (req, res) => {
 
 // Create new tiny URL   
 app.get("/urls/new", (req, res) => {
-  let userid = req.cookies["userid"];
+  let userid = req.session.user_id;
   let userData = users[userid];
   if (userData) {
     let templateVars = {
@@ -177,13 +151,13 @@ app.get("/urls/new", (req, res) => {
     }
     res.render("urls_new", templateVars);
   } else {
-	res.redirect("/login");
+    res.redirect("/login");
   }
 });
 
 //View generated Short URL  
 app.get("/urls/:id", (req, res) => {
-  let userid = req.cookies["userid"];
+  let userid = req.session.user_id;
   let userData = users[userid];
   if (userData) {
     if (urlDatabase[req.params.id].userID === userid) {
@@ -194,17 +168,17 @@ app.get("/urls/:id", (req, res) => {
       };
       res.render("urls_show", templateVars);
     } else {
-  	  res.status(404);
-  	  res.send(`<html><body>You do not have access to edit this url. Please go back to <a href="/urls">list</a> page.</body></html>`);
+      res.status(404);
+      res.send(`<html><body>You do not have access to edit this url. Please go back to <a href="/urls">list</a> page.</body></html>`);
     }
   } else {
-  	res.redirect("/login");
+    res.redirect("/login");
   }
 });
 
 //Edit Long URL
 app.post("/urls/:id", (req, res) => {
-  let userid = req.cookies["userid"];
+  let userid = req.session.user_id;
   let userData = users[userid];
   urlDatabase[req.body.hidshortURL] = {
     url: req.body.longURL,
@@ -220,13 +194,13 @@ app.post("/urls/:id", (req, res) => {
 
 //Delete Long and Short URL
 app.post("/urls/:id/delete", (req, res) => {
-  let userid = req.cookies["userid"];
+  let userid = req.session.user_id;
   if (urlDatabase[req.params.id].userID === userid) {
     delete urlDatabase[req.params.id];
     res.redirect("/urls");
   } else {
-  	res.status(404);
-  	res.send(`<html><body>You do not have access to delete this url. Please go back to <a href="/urls">list</a> page.</body></html>`);
+    res.status(404);
+    res.send(`<html><body>You do not have access to delete this url. Please go back to <a href="/urls">list</a> page.</body></html>`);
   }
 });
 
@@ -282,7 +256,7 @@ app.post("/login", (req, res) => {
     res.send(`<html><body>Invalid password. Please go back to <a href="/login">login</a> page to retry.</body></html>`);
   } else {
     let userid = getUserId(email);
-    res.cookie("userid", userid)
+    req.session.user_id = userid;
     res.redirect("/urls");
   }
 });

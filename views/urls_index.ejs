@@ -1,46 +1,47 @@
 <!DOCTYPE html>
 <html lang ="en">
-<head>
-</head>
-<body>
-	<%- include('partials/_header') %>
-	<br />
-	<br />
-	<br />
-	<br />
-	<form action="/urls/new" method="GET">
-	  <input type="submit" value="Add New URL">
+  <head></head>
+  <body style ="font-size:20px; padding:50px;">
+    <%- include('partials/_header') %>
+    <br />
+    <br />
+    <br />
+    <br />
+    <form action="/urls/new" method="GET">
+      <input type="submit" value="Add New URL">
     </form>
-	<br />
-	<br />
-	<br />
-	<table>
-	  <tr>
-		  <td style="border-style: double"><b>Long URL</b></td>
-		  <td style="border-style: double"><b>Short URL</b></td>
-		  <td style="border-style: double"><b>Edit URL</b></td>
-		  <td style="border-style: double"><b>Delete URL</b></td>
-	  </tr>
-	  <% Object.keys(urls).forEach(function(shortURL) { %>
-	  <tr>
-		  <td style="border-style: double">
-		  	<a href="<%= urls[shortURL].url %>" target="_blank"><%= urls[shortURL].url %></a>
-		  </td>
-		  <td style="border-style: double">
-		  	<a href="/u/<%= shortURL %>" target="_blank"><%= shortURL %></a>
-		  </td>
-		  <td style="border-style: double">
-		  	<form action="/urls/<%= shortURL %>">
-		  		<input type="submit" value="Edit">
-		  	</form>
-		  </td>
-		  <td style="border-style: double">
-		  	<form action="/urls/<%= shortURL %>/delete" method="POST">
-		  		<input type="submit" value="Delete">
-		  	</form>
-		  </td>
-	  </tr>
-	  <% }); %>
-	</table>
-</body>
+    <br />
+    <br />
+    <br />
+    <% if (Object.keys(urls).length > 0) { %>
+    <table style = "border-collapse: collapse; border: 1px solid black;">
+      <tr>
+        <td style="border: 1px solid black;"><b>Long URL</b></td>
+        <td style="border: 1px solid black;"><b>Short URL</b></td>
+        <td style="border: 1px solid black;"><b>Edit URL</b></td>
+        <td style="border: 1px solid black;"><b>Delete URL</b></td>
+      </tr>
+      <% Object.keys(urls).forEach(function(shortURL) { %>
+      <tr>
+        <td style="border: 1px solid black;">
+          <a href="<%= urls[shortURL].url %>" target="_blank"><%= urls[shortURL].url %></a>
+        </td>
+        <td style="border: 1px solid black;">
+          <a href="/u/<%= shortURL %>" target="_blank"><%= shortURL %></a>
+        </td>
+        <td style="border: 1px solid black;">
+          <form action="/urls/<%= shortURL %>">
+            <input type="submit" value="Edit">
+          </form>
+        </td>
+        <td style="border: 1px solid black;">
+          <form action="/urls/<%= shortURL %>/delete" method="POST">
+            <input type="submit" value="Delete">
+          </form>
+        </td>
+      </tr>
+      <% }); %>
+    </table>
+    <% } %>
+  </body>
 </html>
